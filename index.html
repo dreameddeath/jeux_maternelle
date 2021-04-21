@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test libs</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="./dist/bundle.js"></script>
+<style type="text/css">
+    .sticky {
+        position: sticky;
+        top: 0;
+    }
+
+    .keyb {
+        justify-content: center;
+        z-index: 1;
+        font-size: 40px;
+        font-family: serif;
+        background-color: cornflowerblue;
+        overflow-x: scroll;
+        width: 100vw;
+        text-align: center;
+    }
+
+    .keyboard-group {
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    .keyboard-key {
+        border: 1px solid black;
+        display: inline-block;
+
+        min-width: 1.1em;
+        min-height: 1.1em;
+        text-align: center;
+        cursor: pointer;
+        margin: 3px;
+        padding: 3px;
+    }
+
+    .canvas-parent {
+        width: 100vw;
+        overflow-x: scroll;
+    }
+
+    .crossword-current {
+        font: 40px serif;
+        position: sticky;
+        bottom: 0px;
+        text-align: right;
+        z-index: 1;
+        opacity: 70%;
+        background-color: white;
+    }
+
+    #crossword-list {
+        font: 40px serif;
+        list-style: none;
+        cursor: pointer;
+    }
+
+    #drawing {
+        font: 50px serif;
+    }
+</style>
+
+<body>
+    <div>
+        <div class="sticky">
+            <div id="keyboard" class="keyb"></div>
+
+        </div>
+
+        <div class="canvas-parent">
+            <canvas id="crossword-drawing" tabindex="-1" style="font: 40px serif"></canvas>
+            
+        </div>
+        <div id="crossword-current" class="crossword-current sticky-bottom"></div>
+        <ul id="crossword-list">
+
+        </ul>
+    </div>
+</body>
+
+</html>
