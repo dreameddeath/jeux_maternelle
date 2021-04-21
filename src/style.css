@@ -23,6 +23,32 @@
     .crossword-current {
         display: none;
     }
+
+    #crossword-drawing.finished+div.success {
+        display: none;
+    }
+}
+
+@media screen {
+    #crossword-drawing.finished+div.success {
+        display: block;
+    }
+    
+    #crossword-list li.valid {
+        text-decoration: line-through;
+        color          : gray;
+    }
+
+    #crossword-list li.valid::after {
+        content            : "";
+        background-image   : url("https://upload.wikimedia.org/wikipedia/commons/8/8f/Checkmark.svg");
+        width              : 1em;
+        height             : 1em;
+        background-position: bottom;
+        background-size    : 90%;
+        display            : inline-block;
+        background-repeat  : no-repeat;
+    }
 }
 
 .keyboard-group {
@@ -42,22 +68,22 @@
 }
 
 .canvas-parent {
-    max-width : 100vw;
-    overflow-x: auto;
-    display   : inline-block;
-    position  : relative;
+    width          : 100vw;
+    overflow-x     : auto;
+    display        : inline-flex;
+    position       : relative;
+    justify-content: center;
+    align-items    : center;
 }
 
 div.success {
     display         : none;
     position        : absolute;
     background-color: white;
-    top             : 30%;
-    width           : 30%;
     min-width       : 7ch;
+    max-width       : 12ch;
     border-radius   : 10px;
     padding         : 10px;
-    left            : 30%;
     z-index         : 1000;
     font            : 40px serif;
     text-transform  : uppercase;
@@ -70,9 +96,7 @@ div.success img {
     width: 80%;
 }
 
-#crossword-drawing.finished+div.success {
-    display: block;
-}
+
 
 .crossword-current {
     font            : 40px serif;
@@ -89,24 +113,9 @@ div.success img {
     list-style  : none;
     cursor      : pointer;
     break-inside: avoid;
-    columns: 2;
+    columns     : 2;
 }
 
-#crossword-list li.valid {
-    text-decoration: line-through;
-    color          : gray;
-}
-
-#crossword-list li.valid::after {
-    content            : "";
-    background-image   : url("https://upload.wikimedia.org/wikipedia/commons/8/8f/Checkmark.svg");
-    width              : 1em;
-    height             : 1em;
-    background-position: bottom;
-    background-size    : 90%;
-    display            : inline-block;
-    background-repeat  : no-repeat;
-}
 
 #drawing {
     font: 50px serif;
