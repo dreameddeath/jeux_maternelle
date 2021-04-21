@@ -1,6 +1,7 @@
 import { CrossWord, CrossWordOrientation, CrossWordState } from './crossword';
 import { Keyboard } from './keyboard';
 import { CustomEventSetup } from './polyfills';
+import "./style.css";
 
 CustomEventSetup();
 let grid: CrossWord;
