@@ -7,9 +7,9 @@
 .keyb {
     justify-content : center;
     z-index         : 1;
-    font-size       : 40px;
+    font-size       : 2.5rem;
     font-family     : serif;
-    background-color: cornflowerblue;
+    background-color: lightgray;
     overflow-x      : auto;
     width           : 100vw;
     text-align      : center;
@@ -64,13 +64,11 @@
     text-align: center;
     cursor    : pointer;
     margin    : 3px;
-    padding   : 3px;
+    padding   : 0px 3px;
 }
 
 .canvas-parent {
-    width          : 100vw;
-    overflow-x     : auto;
-    display        : inline-flex;
+    display        : flex;
     position       : relative;
     justify-content: center;
     align-items    : center;
@@ -85,7 +83,7 @@ div.success {
     border-radius   : 10px;
     padding         : 10px;
     z-index         : 1000;
-    font            : 40px serif;
+    font            : 2.5rem serif;
     text-transform  : uppercase;
     text-align      : center;
     border          : 20px solid lightgreen;
@@ -99,7 +97,7 @@ div.success img {
 
 
 .crossword-current {
-    font            : 40px serif;
+    font            : 2.5rem serif;
     position        : sticky;
     bottom          : 0px;
     text-align      : right;
@@ -109,14 +107,9 @@ div.success img {
 }
 
 #crossword-list {
-    font        : 40px serif;
+    font        : 2.5rem serif;
     list-style  : none;
     cursor      : pointer;
     break-inside: avoid;
-    columns     : 2;
-}
-
-
-#drawing {
-    font: 50px serif;
+    columns     : 20ch;
 }
