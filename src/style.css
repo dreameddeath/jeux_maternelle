@@ -15,6 +15,16 @@
     text-align      : center;
 }
 
+@media print {
+    .keyb {
+        display: none;
+    }
+
+    .crossword-current {
+        display: none;
+    }
+}
+
 .keyboard-group {
     white-space: nowrap;
     display    : inline-block;
@@ -75,9 +85,11 @@ div.success img {
 }
 
 #crossword-list {
-    font      : 40px serif;
-    list-style: none;
-    cursor    : pointer;
+    font        : 40px serif;
+    list-style  : none;
+    cursor      : pointer;
+    break-inside: avoid;
+    columns: 2;
 }
 
 #crossword-list li.valid {

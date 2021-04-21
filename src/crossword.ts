@@ -612,7 +612,7 @@ class CrossWordList {
         const newItem = document.createElement("li");
         this.map[item.name] = newItem;
         newItem.dataset["name"] = item.name;
-        newItem.appendChild(document.createTextNode(index + "\u00a0" + item.name.toLocaleUpperCase()));
+        newItem.appendChild(document.createTextNode(index + "\u00a0-\u00a0" + item.name.toLocaleUpperCase()));
         this.target_list.appendChild(newItem);
         newItem.addEventListener("click", () => this.canvas.manageClickOnListItem(item));
     }
