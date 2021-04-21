@@ -323,6 +323,9 @@ class CrossWordImage {
 class CrossWordStateManager {
     private state: CrossWordState;
     private listeners: ((newState: CrossWordState) => void)[] = [];
+    private validItems: { [name: string]: true } = {};
+    private itemsListener: ((item: CrossWordItem, valid: boolean) => void)[] = [];
+    private allValidListeners: ((allValid: boolean) => void)[] = [];
 
     constructor(private readonly grid: CrossWordGrid, private readonly items: CrossWordItem[]) {
         const firstItem = items[0];
@@ -360,14 +363,44 @@ class CrossWordStateManager {
             return false;
         }
         this.listeners.forEach(listener => listener(this.state));
+        const invalidItems = this.getListOfAllCase()
+            .filter(box => !box.isNumber)
+            .filter(box => box.currChar !== box.validChar).map(box => box.parent).reduce(
+                (map, item) => { map[item.name] = true; return map; }, {} as { [key: string]: true });
+
+
+        for (const item of this.items) {
+            const isValidItem = invalidItems[item.name] !== true;
+            const isPreviouslyValid = this.validItems[item.name];
+            if (isValidItem !== isPreviouslyValid) {
+                this.itemsListener.forEach(listener => listener(item, isValidItem));
+                if (!isValidItem) {
+                    delete this.validItems[item.name];
+                }
+                else {
+                    this.validItems[item.name] = true;
+                }
+            }
+        }
+        //if (Object.keys(invalidItems).length === 0) {
+        this.allValidListeners.forEach(listener => listener(Object.keys(invalidItems).length === 0));
+        //}
         return true;
     }
 
-    public addChangeListener(listener: (newState: CrossWordState) => void, autoSubmit: boolean = true) {
+    public addStateChangeListener(listener: (newState: CrossWordState) => void, autoSubmit: boolean = true) {
         this.listeners.push(listener);
         if (autoSubmit) {
             listener(this.state);
         }
+    }
+
+    public addItemValidityChangeListener(listener: (item: CrossWordItem, valid: boolean) => void) {
+        this.itemsListener.push(listener);
+    }
+
+    public addAllItemValidListener(listener: (allValid: boolean) => void): void {
+        this.allValidListeners.push(listener);
     }
 }
 
@@ -396,7 +429,15 @@ class CrossWordCanvas {
         ctx.strokeStyle = 'black';
 
         this.images = items.filter(item => item.img_src && item.inplace_image).map(item => new CrossWordImage(ctx, item, grid, this, config));
-        this.state.addChangeListener(() => self.planRedraw());
+        this.state.addStateChangeListener(() => self.planRedraw());
+        this.state.addAllItemValidListener((valid) => {
+            if (valid) {
+                self.target.classList.add("finished")
+            }
+            else {
+                self.target.classList.remove("finished")
+            }
+        });
     }
 
     private planRedraw(): void {
@@ -559,17 +600,31 @@ class CrossWordCanvas {
 
 class CrossWordList {
     private target_list: HTMLElement;
-
-    constructor(items: CrossWordItem[], private readonly config: CrossWordConfig, private readonly canvas: CrossWordCanvas) {
+    private map: { [key: string]: HTMLLIElement } = {};
+    constructor(items: CrossWordItem[], private readonly config: CrossWordConfig, private readonly canvas: CrossWordCanvas, state: CrossWordStateManager) {
         this.target_list = document.getElementById(this.config.target_list);
         items.forEach((item, index) => this.setupListItem(index, item));
+        const self = this;
+        state.addItemValidityChangeListener((item, validity) => self.onStateChange(item, validity));
     }
 
     private setupListItem(index: number, item: CrossWordItem) {
         const newItem = document.createElement("li");
+        this.map[item.name] = newItem;
+        newItem.dataset["name"] = item.name;
         newItem.appendChild(document.createTextNode(index + "\u00a0" + item.name.toLocaleUpperCase()));
         this.target_list.appendChild(newItem);
         newItem.addEventListener("click", () => this.canvas.manageClickOnListItem(item));
+    }
+
+    private onStateChange(item: CrossWordItem, validity: boolean) {
+        if (validity) {
+            this.map[item.name].classList.add("valid");
+        }
+        else {
+            this.map[item.name].classList.remove("valid");
+        }
+
     }
 }
 
@@ -579,7 +634,7 @@ class CrossWordCurrent {
     constructor(config: CrossWordConfig, state: CrossWordStateManager) {
         this.targetcurrent = document.getElementById(config.target_current);
         const self = this;
-        state.addChangeListener((newState) => self.updateCurrent(newState));
+        state.addStateChangeListener((newState) => self.updateCurrent(newState));
     }
 
     private updateCurrent(newState: CrossWordState): void {
@@ -612,7 +667,7 @@ export class CrossWord {
         this.state = new CrossWordStateManager(this.grid, items);
         this.canvas = new CrossWordCanvas(items, this.grid, this.config, this.state);
         if (config.target_list) {
-            this.list = new CrossWordList(items, config, this.canvas);
+            this.list = new CrossWordList(items, config, this.canvas, this.state);
         }
         if (config.target_current) {
             this.current = new CrossWordCurrent(config, this.state);
